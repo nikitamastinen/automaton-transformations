@@ -22,7 +22,7 @@ def remove_empty_edges(automaton: FiniteAutomatonBase) -> FiniteAutomatonBase:
             if edge.value == '':
                 if edge.end in automaton.terminals:
                     copy.terminals.add(root)
-                _dfs(edge.end, root)
+                _dfs(vertex=edge.end, root=root)
             else:
                 copy.add_edge(Edge(root, edge.end, edge.value))
 

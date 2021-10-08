@@ -5,26 +5,6 @@ from FiniteAutomaton.Edge import Edge
 from FiniteAutomaton.FiniteAutomatonBase import FiniteAutomatonBase
 
 
-def _build_graph(
-        copy: FiniteAutomatonBase,
-        automaton: FiniteAutomatonBase,
-        state: Dict[str, List[List[str]]],
-        mask: Dict[str, str],
-):
-    copy.start = '0'
-
-    processed_edges: Set[Tuple[str, str, str]] = set()
-    for key in state:
-        for edge in state[key]:
-            if key in automaton.terminals:
-                copy.terminals.add(mask[key])
-            if len(edge) >= 2:
-                edge_tuple = (mask[key], edge[1], edge[0])
-                if edge_tuple not in processed_edges:
-                    processed_edges.add(edge_tuple)
-                    copy.add_edge(Edge(mask[key], edge[1], edge[0]))
-
-
 def _calculate_next_state(
         next_state: Dict[str, List[List[str]]],
         automaton: FiniteAutomatonBase,
@@ -41,6 +21,27 @@ def _calculate_next_state(
             next_state[vertex].sort()
 
 
+def _build_graph(
+        copy: FiniteAutomatonBase,
+        automaton: FiniteAutomatonBase,
+        state: Dict[str, List[List[str]]],
+        mask: Dict[str, str],
+):
+    copy.start = '0'
+
+    processed_edges: Set[Tuple[str, str, str]] = set()
+    for key in state:
+        for edge in state[key]:
+            if key in automaton.terminals:
+                copy.terminals.add(mask[key])
+            if len(edge) < 2:
+                continue
+            edge_tuple = (mask[key], edge[1], edge[0])
+            if edge_tuple not in processed_edges:
+                processed_edges.add(edge_tuple)
+                copy.add_edge(Edge(mask[key], edge[1], edge[0]))
+
+
 def minimize(deterministic_automaton: FiniteAutomatonBase) -> FiniteAutomatonBase:
     automaton: FiniteAutomatonBase = deepcopy(deterministic_automaton)
     automaton.reindex_vertices()
@@ -54,7 +55,7 @@ def minimize(deterministic_automaton: FiniteAutomatonBase) -> FiniteAutomatonBas
 
     while True:
         next_state: Dict[str, List[List[str]]] = {}
-        _calculate_next_state(next_state, automaton, mask)
+        _calculate_next_state(next_state=next_state, automaton=automaton, mask=mask)
 
         reindex_map: Dict[str] = {}
         index: int = 0
@@ -66,7 +67,7 @@ def minimize(deterministic_automaton: FiniteAutomatonBase) -> FiniteAutomatonBas
             if reindex_map[str(next_state[key])] != mask[key]:
                 is_finished = False
         if is_finished:
-            _build_graph(copy, automaton, next_state, mask)
+            _build_graph(copy=copy, automaton=automaton, state=next_state, mask=mask)
             break
 
         mask = {}

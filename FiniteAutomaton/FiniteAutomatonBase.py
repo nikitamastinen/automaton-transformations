@@ -82,15 +82,15 @@ class FiniteAutomatonBase:
         print(*self.terminals)
 
     def dump(self):
-        converted: Dict = {'head': self.start, 'edges': [], 'terminals': []}
+        converted_automaton: Dict = {'head': self.start, 'edges': [], 'terminals': []}
         for key in self.graph:
             for edge in self.graph[key]:
-                converted['edges'].append((
+                converted_automaton['edges'].append((
                     edge.start,
                     edge.end,
                     edge.value,
                 ))
-        converted['edges'].sort()
-        converted['terminals'] = [vertex for vertex in self.terminals]
-        converted['terminals'].sort()
-        return converted
+        converted_automaton['edges'].sort()
+        converted_automaton['terminals'] = [vertex for vertex in self.terminals]
+        converted_automaton['terminals'].sort()
+        return converted_automaton
