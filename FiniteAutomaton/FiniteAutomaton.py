@@ -36,4 +36,4 @@ class FiniteAutomaton:
         self.base.print()
 
     def dict(self) -> Dict[str, Any]:
-        return self.base.dict()
+        return self.base.dump()

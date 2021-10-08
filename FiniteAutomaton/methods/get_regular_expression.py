@@ -14,8 +14,8 @@ def get_regular_expression(deterministic_automaton: FiniteAutomatonBase) -> str:
     automaton = determinate(automaton)
     automaton = complete_edges(automaton)
 
-    for i in automaton.terminals:
-        automaton.add_edge(Edge(i, 'end', '1'))
+    for vertex in automaton.terminals:
+        automaton.add_edge(Edge(vertex, 'end', '1'))
     automaton.terminals = {'end'}
     automaton.reindex_vertices()
 
@@ -39,16 +39,16 @@ def get_regular_expression(deterministic_automaton: FiniteAutomatonBase) -> str:
         cyc = ''
         if len(loops) > 0:
             cyc = '('
-            for e in loops:
-                cyc += e.value + '+'
+            for edge in loops:
+                cyc += edge.value + '+'
             cyc = cyc[:-1] + ')*'
-        for x in inp:
-            for y in out:
-                automaton.add_edge(Edge(x.start, y.end, '(' + x.value + cyc + y.value + ')'))
-        for e in inp:
-            automaton.graph[e.start].remove(e)
-        for e in out:
-            automaton.graph[e.start].remove(e)
+        for start in inp:
+            for end in out:
+                automaton.add_edge(Edge(start.start, end.end, '(' + start.value + cyc + end.value + ')'))
+        for edge in inp:
+            automaton.graph[edge.start].remove(edge)
+        for edge in out:
+            automaton.graph[edge.start].remove(edge)
     result = '('
     for vertex in automaton.graph.keys():
         for edge in automaton.graph[vertex]:

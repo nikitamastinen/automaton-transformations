@@ -8,23 +8,23 @@ def remove_empty_edges(automaton: FiniteAutomatonBase) -> FiniteAutomatonBase:
     used: Set = set()
     copy = FiniteAutomatonBase(list(), automaton.terminals, automaton.alphabet, automaton.start)
 
-    def _dfs(v: str, root: str):
-        used.add(v)
+    def _dfs(vertex: str, root: str):
+        used.add(vertex)
 
-        if v not in automaton.graph.keys():
+        if vertex not in automaton.graph.keys():
             return
 
-        for e in automaton.graph[v]:
-            if e.end == v and e.value != '':
-                copy.add_edge(Edge(root, e.end, e.value))
-            if e.end in used:
+        for edge in automaton.graph[vertex]:
+            if edge.end == vertex and edge.value != '':
+                copy.add_edge(Edge(root, edge.end, edge.value))
+            if edge.end in used:
                 continue
-            if e.value == '':
-                if e.end in automaton.terminals:
+            if edge.value == '':
+                if edge.end in automaton.terminals:
                     copy.terminals.add(root)
-                _dfs(e.end, root)
+                _dfs(edge.end, root)
             else:
-                copy.add_edge(Edge(root, e.end, e.value))
+                copy.add_edge(Edge(root, edge.end, edge.value))
 
     for key in automaton.graph.keys():
         used.clear()
