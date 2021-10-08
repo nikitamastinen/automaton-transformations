@@ -13,15 +13,15 @@ def _build_graph(
 ):
     copy.start = '0'
 
-    used_edges: Set[Tuple[str, str, str]] = set()
+    processed_edges: Set[Tuple[str, str, str]] = set()
     for key in state:
         for edge in state[key]:
             if key in automaton.terminals:
                 copy.terminals.add(mask[key])
             if len(edge) >= 2:
                 edge_tuple = (mask[key], edge[1], edge[0])
-                if edge_tuple not in used_edges:
-                    used_edges.add(edge_tuple)
+                if edge_tuple not in processed_edges:
+                    processed_edges.add(edge_tuple)
                     copy.add_edge(Edge(mask[key], edge[1], edge[0]))
 
 
